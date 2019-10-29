@@ -18,9 +18,7 @@ router.post('/', validateRequest, async (req, res) => {
       message,
     };
 
-    return res.json(
-      await dal.postNotifcations(notification),
-    );
+    return res.json(await dal.postNotifcations(notification));
   } catch (err) {
     res.json(err);
   }
@@ -36,9 +34,7 @@ router.get('/', validateRequest, async (req, res) => {
       limit,
     };
 
-    return res.json(
-      await dal.getNotifcations(data),
-    );
+    return res.json(await dal.getNotifcations(data));
   } catch (err) {
     res.json(err);
   }

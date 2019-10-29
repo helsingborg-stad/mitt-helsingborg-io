@@ -8,8 +8,8 @@ const jsonapi = require('../../jsonapi');
 const axiosClient = axios.create({
   httpsAgent: new https.Agent({
     rejectUnauthorized: false,
-    cert: process.env.CERT,
-    key: process.env.KEY,
+    cert: process.env.AXIOS_CERT,
+    key: process.env.AXIOS_KEY,
   }),
   headers: {
     'Content-Type': 'application/json',
@@ -46,10 +46,12 @@ const tryAxiosRequest = async callback => {
 const auth = async (req, res) => {
   try {
     const { personalNumber, endUserIp } = req.body;
-    const endpoint = `${process.env.BANKIDURL}/api/v1/bankid/auth`;
-    const token = jwt.sign({ pno: personalNumber }, `${process.env.BANKIDURL}/api/v1/bankid/auth`, {
-      expiresIn: '24h',
-    });
+    const endpoint = `${process.env.MS_AUTHENTICATION_BASE_URL}/api/v1/bankid/auth`;
+    const token = jwt.sign(
+      { pno: personalNumber },
+      `${process.env.MS_AUTHENTICATION_BASE_URL}/api/v1/bankid/auth`,
+      { expiresIn: '24h' }
+    );
 
     const data = {
       personalNumber,
@@ -74,7 +76,7 @@ const auth = async (req, res) => {
 const collect = async (req, res) => {
   try {
     const { orderRef } = req.body;
-    const endpoint = `${process.env.BANKIDURL}/api/v1/bankid/collect`;
+    const endpoint = `${process.env.MS_AUTHENTICATION_BASE_URL}/api/v1/bankid/collect`;
 
     const data = {
       orderRef,
@@ -91,7 +93,7 @@ const collect = async (req, res) => {
 const cancel = async (req, res) => {
   try {
     const { orderRef } = req.body;
-    const endpoint = `${process.env.BANKIDURL}/api/v1/bankid/cancel`;
+    const endpoint = `${process.env.MS_AUTHENTICATION_BASE_URL}/api/v1/bankid/cancel`;
 
     const data = {
       orderRef,
@@ -108,7 +110,7 @@ const cancel = async (req, res) => {
 const sign = async (req, res) => {
   try {
     const { personalNumber, endUserIp, userVisibleData } = req.body;
-    const endpoint = `${process.env.BANKIDURL}/api/v1/bankid/sign`;
+    const endpoint = `${process.env.MS_AUTHENTICATION_BASE_URL}/api/v1/bankid/sign`;
 
     const data = {
       personalNumber,

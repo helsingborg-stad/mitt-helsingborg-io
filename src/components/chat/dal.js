@@ -27,7 +27,7 @@ const tryAxiosRequest = async callback => {
 
 const postWatsonMsg = async (req, res) => {
   try {
-    const endpoint = `${process.env.WATSONURL}/api/v1/message`;
+    const endpoint = `${process.env.MS_WATSON_BASE_URL}/api/v1/message`;
     const response = await tryAxiosRequest(() => axios.post(endpoint, req.body));
 
     return res.json(response.data);
@@ -46,7 +46,7 @@ const create = {
 
 const getWatsonWorkspace = async (req, res) => {
   try {
-    const endpoint = `${process.env.WATSONURL}/api/v1/workspaces`;
+    const endpoint = `${process.env.MS_WATSON_BASE_URL}/api/v1/workspaces`;
     const response = await tryAxiosRequest(() => axios.get(endpoint));
 
     return res.json(response.data);

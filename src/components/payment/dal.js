@@ -20,7 +20,7 @@ exports.createOrder = async (request) => {
     const externalOrderId = getExternalOrderId(localOrderId);
     await updateExternalOrderId(localOrderId, externalOrderId);
 
-    const endpoint = `${process.env.PAYMENTAPIURL}/orders/create`;
+    const endpoint = `${process.env.MS_PAYMENT_BASE_URL}/orders/create`;
 
     const data = {
       OrderNumber: externalOrderId,
@@ -47,7 +47,7 @@ exports.createOrder = async (request) => {
 
 exports.initializePayment = async (request, orderId) => {
   try {
-    const endpoint = `${process.env.PAYMENTAPIURL}/orders/${orderId}/initializePayment/`;
+    const endpoint = `${process.env.MS_PAYMENT_BASE_URL}/orders/${orderId}/initializePayment/`;
 
     const data = {
       OrderId: orderId,
@@ -216,8 +216,8 @@ const getDbConnection = () => mysql.createConnection({
 const axiosClient = axios.create({
   httpsAgent: new https.Agent({
     rejectUnauthorized: false,
-    cert: process.env.CERT,
-    key: process.env.KEY,
+    cert: process.env.AXIOS_CERT,
+    key: process.env.AXIOS_KEY,
   }),
   headers: {
     'Content-Type': 'application/json',

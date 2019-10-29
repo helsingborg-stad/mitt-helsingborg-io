@@ -7,8 +7,8 @@ const { throwCustomDomainError } = require('../../utils/error');
 const axiosClient = axios.create({
   httpsAgent: new https.Agent({
     rejectUnauthorized: false,
-    cert: process.env.CERT,
-    key: process.env.KEY,
+    cert: process.env.AXIOS_CERT,
+    key: process.env.AXIOS_KEY,
   }),
   headers: {
     'Content-Type': 'application/json',
@@ -22,7 +22,7 @@ const createErrorResponse = async (error, res) => {
   return res.status(error.status).json(serializedData);
 };
 
-const tryAxiosRequest = async (callback) => {
+const tryAxiosRequest = async callback => {
   try {
     const response = await callback();
     return response;
@@ -30,9 +30,9 @@ const tryAxiosRequest = async (callback) => {
     let statusCode;
 
     if (!error.response) {
-      statusCode = 502 // Triggers if axios gets an connection error from a service.
+      statusCode = 502; // Triggers if axios gets an connection error from a service.
     } else {
-      statusCode = error.response.status
+      statusCode = error.response.status;
     }
 
     throwCustomDomainError(statusCode);
@@ -42,7 +42,7 @@ const tryAxiosRequest = async (callback) => {
 
 const readForms = async (req, res) => {
   try {
-    const endpoint = `${process.env.FORMSERVICEURL}/api/v1/forms/`;
+    const endpoint = `${process.env.MS_FORM_BASE_URL}/api/v1/forms/`;
     const axiosResponse = await tryAxiosRequest(() => axiosClient.get(endpoint));
 
     return res.json(axiosResponse.data);
@@ -54,7 +54,7 @@ const readForms = async (req, res) => {
 const readForm = async (req, res) => {
   try {
     const { formId } = req.params;
-    const endpoint = `${process.env.FORMSERVICEURL}/api/v1/forms/${formId}`;
+    const endpoint = `${process.env.MS_FORM_BASE_URL}/api/v1/forms/${formId}`;
     const axiosResponse = await tryAxiosRequest(() => axiosClient.get(endpoint));
 
     return res.json(axiosResponse.data);
@@ -66,7 +66,7 @@ const readForm = async (req, res) => {
 const readFormQuestions = async (req, res) => {
   try {
     const { formId } = req.params;
-    const endpoint = `${process.env.FORMSERVICEURL}/api/v1/forms/${formId}`;
+    const endpoint = `${process.env.MS_FORM_BASE_URL}/api/v1/forms/${formId}`;
     const axiosResponse = await tryAxiosRequest(() => axiosClient.get(endpoint));
 
     return res.json(axiosResponse.data);
