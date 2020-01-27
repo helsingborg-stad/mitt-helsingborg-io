@@ -25,10 +25,10 @@ const tryAxiosRequest = async callback => {
  * CREATE RESOURCE METHODS
  */
 
-const postWatsonMsg = async (req, res) => {
+const postWatsonRequest = async (endpoint, req, res) => {
   try {
-    const endpoint = `${process.env.WATSONURL}/api/v1/message`;
-    const response = await tryAxiosRequest(() => axios.post(endpoint, req.body));
+    const apiUrl = `${process.env.WATSONURL}/api/v1/${endpoint}`;
+    const response = await tryAxiosRequest(() => axios.post(apiUrl, req.body));
 
     return res.json(response.data);
   } catch (error) {
@@ -37,29 +37,10 @@ const postWatsonMsg = async (req, res) => {
 };
 
 const create = {
-  message: postWatsonMsg,
-};
-
-/**
- * READ RESOURCE METHODS
- */
-
-const getWatsonWorkspace = async (req, res) => {
-  try {
-    const endpoint = `${process.env.WATSONURL}/api/v1/workspaces`;
-    const response = await tryAxiosRequest(() => axios.get(endpoint));
-
-    return res.json(response.data);
-  } catch (error) {
-    return createErrorResponse(error, res);
-  }
-};
-
-const read = {
-  workspaces: getWatsonWorkspace,
+  message: postWatsonRequest,
+  session: postWatsonRequest,
 };
 
 module.exports = {
   create,
-  read,
 };
