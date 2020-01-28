@@ -6,7 +6,7 @@ const user = require('./user/api');
 const forms = require('./forms/api');
 const notification = require('./notification/api');
 const payment = require('./payment/api');
-const chatbot = require('./chat/api');
+const watson = require('./chatbot/watson/api');
 
 const routes = () => {
   const router = express.Router();
@@ -30,7 +30,7 @@ const routes = () => {
   router.use('/forms', forms);
   router.use('/notification', notification);
   router.use('/payment', payment);
-  router.use('/chatbot', chatbot);
+  router.use('/chatbot', watson);
 
   return router;
 };

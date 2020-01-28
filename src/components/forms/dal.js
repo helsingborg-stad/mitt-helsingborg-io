@@ -66,7 +66,7 @@ const readForm = async (req, res) => {
 const readFormQuestions = async (req, res) => {
   try {
     const { formId } = req.params;
-    const endpoint = `${process.env.FORMSERVICEURL}/api/v1/forms/${formId}`;
+    const endpoint = `${process.env.FORMSERVICEURL}/api/v1/forms/${formId}/questions`;
     const axiosResponse = await tryAxiosRequest(() => axiosClient.get(endpoint));
 
     return res.json(axiosResponse.data);
