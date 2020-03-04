@@ -46,8 +46,8 @@ const tryAxiosRequest = async callback => {
 const auth = async (req, res) => {
   try {
     const { personalNumber, endUserIp } = req.body;
-    const endpoint = `${process.env.BANKIDURL}/bankid`;
-    const token = jwt.sign({ pno: personalNumber }, `${process.env.BANKIDURL}/bankid`, {
+    const endpoint = `${process.env.BANKIDURL}/auth`;
+    const token = jwt.sign({ pno: personalNumber }, `${process.env.BANKIDURL}/auth`, {
       expiresIn: '24h',
     });
 
@@ -58,7 +58,7 @@ const auth = async (req, res) => {
     };
 
     const jsonapiResponse = await tryAxiosRequest(() => axiosClient.post(endpoint, data));
-
+    console.log(jsonapiResponse.data);
     const deserializedJsonapiResponse = jsonapi.serializer.deserialize(
       'bankidauth',
       jsonapiResponse.data
@@ -74,7 +74,7 @@ const auth = async (req, res) => {
 const collect = async (req, res) => {
   try {
     const { orderRef } = req.body;
-    const endpoint = `${process.env.BANKIDURL}/bankid/collect`;
+    const endpoint = `${process.env.BANKIDURL}/collect`;
 
     const data = {
       orderRef,
@@ -91,13 +91,13 @@ const collect = async (req, res) => {
 const cancel = async (req, res) => {
   try {
     const { orderRef } = req.body;
-    const endpoint = `${process.env.BANKIDURL}/bankid/cancel`;
+    const endpoint = `${process.env.BANKIDURL}/cancel`;
 
     const data = {
       orderRef,
     };
 
-    const response = await tryAxiosRequest(() => axiosClient.delete(endpoint, { data }));
+    const response = await tryAxiosRequest(() => axiosClient.post(endpoint, { data }));
 
     return res.json(response.data);
   } catch (error) {
@@ -108,8 +108,7 @@ const cancel = async (req, res) => {
 const sign = async (req, res) => {
   try {
     const { personalNumber, endUserIp, userVisibleData } = req.body;
-    const endpoint = `${process.env.BANKIDURL}/bankid/sign`;
-
+    const endpoint = `${process.env.BANKIDURL}/sign`;
     const data = {
       personalNumber,
       endUserIp,
