@@ -55,7 +55,7 @@ class ValidationError extends DomainError {
   }
 }
 
-const throwCustomDomainError = statusCode => {
+const throwCustomDomainError = (statusCode = 500) => {
   switch (statusCode) {
     case 400:
       throw new BadRequestError(

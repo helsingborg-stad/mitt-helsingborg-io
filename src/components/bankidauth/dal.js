@@ -1,6 +1,8 @@
 const axios = require('axios');
 const https = require('https');
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
+const path = require('path');
 const logger = require('../../utils/logger');
 const { throwCustomDomainError } = require('../../utils/error');
 const jsonapi = require('../../jsonapi');
@@ -8,8 +10,8 @@ const jsonapi = require('../../jsonapi');
 const axiosClient = axios.create({
   httpsAgent: new https.Agent({
     rejectUnauthorized: false,
-    cert: process.env.CERT,
-    key: process.env.KEY,
+    cert: fs.readFileSync(path.resolve(__dirname, '../../../assets/certificates/server.crt')),
+    key: fs.readFileSync(path.resolve(__dirname, '../../../assets/certificates/server.key')),
   }),
   headers: {
     'Content-Type': 'application/json',
@@ -38,7 +40,15 @@ const tryAxiosRequest = async callback => {
     const response = await callback();
     return response;
   } catch (error) {
-    throwCustomDomainError(error.response.status);
+    let statusCode;
+
+    if (!error.response) {
+      statusCode = 502; // Triggers if axios gets an connection error from a service.
+    } else {
+      statusCode = error.response.status;
+    }
+
+    throwCustomDomainError(statusCode);
     return undefined;
   }
 };
@@ -50,7 +60,7 @@ const auth = async (req, res) => {
     const token = jwt.sign({ pno: personalNumber }, `${process.env.BANKIDURL}/auth`, {
       expiresIn: '24h',
     });
-
+    console.log(process.env.CERT);
     const data = {
       personalNumber,
       endUserIp,
@@ -58,11 +68,12 @@ const auth = async (req, res) => {
     };
 
     const jsonapiResponse = await tryAxiosRequest(() => axiosClient.post(endpoint, data));
-    console.log(jsonapiResponse.data);
+
     const deserializedJsonapiResponse = jsonapi.serializer.deserialize(
       'bankidauth',
       jsonapiResponse.data
     );
+
     deserializedJsonapiResponse.token = token;
 
     return await createSuccessResponse(deserializedJsonapiResponse, res, 'bankidauth');
