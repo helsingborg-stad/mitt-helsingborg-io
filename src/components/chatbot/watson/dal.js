@@ -27,7 +27,7 @@ const tryAxiosRequest = async callback => {
 
 const postMessage = async (req, res) => {
   try {
-    const endpoint = `${process.env.WATSONURL}/api/v1/message`;
+    const endpoint = `${process.env.WATSONURL}/message`;
     const response = await tryAxiosRequest(() => axios.post(endpoint, req.body));
 
     return res.json(response.data);
