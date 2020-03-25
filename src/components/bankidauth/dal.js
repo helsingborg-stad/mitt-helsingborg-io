@@ -60,7 +60,7 @@ const auth = async (req, res) => {
     const token = jwt.sign({ pno: personalNumber }, `${process.env.BANKIDURL}/auth`, {
       expiresIn: '24h',
     });
-    console.log(process.env.CERT);
+
     const data = {
       personalNumber,
       endUserIp,

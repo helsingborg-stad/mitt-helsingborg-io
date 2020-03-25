@@ -25,8 +25,6 @@ const tryAxiosRequest = async callback => {
 const axiosClient = axios.create({
   httpsAgent: new https.Agent({
     rejectUnauthorized: false,
-    cert: process.env.CERT,
-    key: process.env.KEY,
   }),
   headers: {
     'Content-Type': 'application/json',
@@ -40,9 +38,12 @@ const axiosClient = axios.create({
 const getUser = async (req, res) => {
   try {
     const { id } = req.params;
-
-    const endpoint = `${process.env.NAVETURL}/user/${id}`;
+    const endpoint = `${process.env.USERURL}/users/${id}`;
     const response = await tryAxiosRequest(() => axiosClient.get(endpoint));
+
+    if (Object.entries(response.data.data.attributes).length === 0) {
+      throwCustomDomainError(400);
+    }
 
     return res.json(response.data);
   } catch (error) {
