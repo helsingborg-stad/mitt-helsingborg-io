@@ -33,7 +33,7 @@
     "supertest": "^3.3.0"
   },
   "dependencies": {
-    "@hapi/joi": "^15.0.1",
+    "@hapi/joi": "^15.1.1",
     "axios": "^0.18.0",
     "bcrypt": "^3.0.3",
     "body-parser": "^1.19.0",
